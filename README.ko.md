@@ -2,7 +2,7 @@
 
 > 비디오 게임처럼 GLSL을 배우세요.
 
-[**🎮 무료 데모 플레이 →**](https://shader.dolstep.com) &nbsp;·&nbsp; [🌐 홍보 사이트](https://bobddadoo.github.io/pixel-shader-academy/) &nbsp;·&nbsp; 🛒 **itch.io 출시 예정**
+[**🎮 무료 데모 플레이 →**](https://shader.dolstep.com) &nbsp;·&nbsp; [**🛒 itch.io 에서 구매 →**](https://bobddadoo.itch.io/pixel-shader-academy-full-source) &nbsp;·&nbsp; [🌐 홍보 사이트](https://bobddadoo.github.io/pixel-shader-academy/)
 
 [English README](./README.md)
 
@@ -58,7 +58,7 @@
 ## 어디서 해요?
 
 - **무료 데모 (항상 최신):** [shader.dolstep.com](https://shader.dolstep.com)
-- **itch.io 정식 출시:** *준비 중 — 위시리스트 링크가 열리면 [shader.dolstep.com](https://shader.dolstep.com) 에서 안내합니다.*
+- **itch.io 정식판:** [bobddadoo.itch.io/pixel-shader-academy-full-source](https://bobddadoo.itch.io/pixel-shader-academy-full-source)
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Learn GLSL the way you learn a video game.
 
-[**🎮 Play the Free Demo →**](https://shader.dolstep.com) &nbsp;·&nbsp; [🌐 Landing site](https://bobddadoo.github.io/pixel-shader-academy/) &nbsp;·&nbsp; 🛒 **Buy on itch.io — coming soon**
+[**🎮 Play the Free Demo →**](https://shader.dolstep.com) &nbsp;·&nbsp; [**🛒 Buy on itch.io →**](https://bobddadoo.itch.io/pixel-shader-academy-full-source) &nbsp;·&nbsp; [🌐 Landing site](https://bobddadoo.github.io/pixel-shader-academy/)
 
 [한국어 안내](./README.ko.md)
 
@@ -58,7 +58,7 @@ More on the way — synthwave city, fire shaders, raymarched scenes, sprite atla
 ## Where to play
 
 - **Free demo (always latest):** [shader.dolstep.com](https://shader.dolstep.com)
-- **Full game on itch.io:** *launching soon — drop by [shader.dolstep.com](https://shader.dolstep.com) for the wishlist link when it goes live.*
+- **Full game on itch.io:** [bobddadoo.itch.io/pixel-shader-academy-full-source](https://bobddadoo.itch.io/pixel-shader-academy-full-source)
 
 ---
 
