@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pixel Shader Academy — Learn GLSL like a video game</title>
+  <meta name="description" content="A browser-based, stage-by-stage GLSL fragment shader playground. Write code, see the preview, get auto-graded against the reference solution." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pixel Shader Academy" />
+  <meta property="og:description" content="Learn GLSL fragment shaders, stage by stage. Live preview, auto-grading, EN + 한국어 lessons." />
+  <meta property="og:image" content="./assets/og.jpg" />
+  <meta property="og:url" content="https://bobddadoo.github.io/pixel-shader-academy/" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pixel Shader Academy" />
+  <meta name="twitter:description" content="Learn GLSL fragment shaders, stage by stage. Live preview, auto-grading." />
+  <meta name="twitter:image" content="./assets/og.jpg" />
+
+  <link rel="icon" href="./favicon.ico" />
+  <link rel="apple-touch-icon" href="./assets/icon-256.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0b0a18;
+      --bg-2: #15132a;
+      --panel: #1a1832;
+      --border: #2a2750;
+      --text: #eceaf6;
+      --muted: #a39fc4;
+      --accent: #b388ff;
+      --accent-2: #56ccf2;
+      --accent-3: #ff5dcf;
+      --good: #6ee7b7;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(179, 136, 255, .25), transparent 60%),
+        radial-gradient(900px 500px at 0% 30%, rgba(86, 204, 242, .15), transparent 60%),
+        radial-gradient(700px 500px at 50% 110%, rgba(255, 93, 207, .15), transparent 60%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, .mono { font-family: 'JetBrains Mono', 'Consolas', monospace; }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* Top nav */
+    nav.top {
+      padding: 18px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    nav.top .brand {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 18px;
+    }
+    nav.top .brand img { width: 32px; height: 32px; border-radius: 8px; }
+    nav.top .links { display: flex; gap: 22px; font-size: 14px; }
+    nav.top .links a { color: var(--muted); }
+    nav.top .links a:hover { color: var(--text); text-decoration: none; }
+    @media (max-width: 640px) { nav.top .links { display: none; } }
+
+    /* Hero */
+    .hero { padding: 36px 0 72px; text-align: center; }
+    .hero .banner {
+      width: 100%; max-width: 920px;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45), 0 0 0 1px var(--border);
+      display: block; margin: 0 auto 36px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, #b388ff 45%, #56ccf2 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p.tagline {
+      font-size: clamp(16px, 1.8vw, 20px);
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 28px;
+    }
+    .badges {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      margin-bottom: 28px;
+    }
+    .badge {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(179, 136, 255, .12);
+      border: 1px solid rgba(179, 136, 255, .35);
+      color: #e8defc;
+    }
+    .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 26px;
+      font-size: 16px; font-weight: 700;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .cta:hover { transform: translateY(-2px); text-decoration: none; }
+    .cta.primary {
+      background: linear-gradient(135deg, #b388ff, #ff5dcf);
+      color: #1a0f2e;
+      box-shadow: 0 10px 30px rgba(179, 136, 255, .35);
+    }
+    .cta.primary:hover { box-shadow: 0 14px 40px rgba(179, 136, 255, .5); }
+    .cta.secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .cta.secondary:hover { border-color: var(--accent-2); color: var(--accent-2); }
+    .cta .icon { width: 20px; height: 20px; }
+    .cta .soon {
+      font-size: 11px; font-weight: 600;
+      background: rgba(255, 93, 207, .2);
+      color: #ffb6e8;
+      padding: 2px 8px; border-radius: 6px;
+      margin-left: 4px;
+    }
+
+    /* Sections */
+    section { padding: 60px 0; }
+    .section-title {
+      font-size: clamp(24px, 3vw, 32px);
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+      text-align: center;
+    }
+    .section-sub {
+      color: var(--muted);
+      text-align: center;
+      margin: 0 auto 40px;
+      max-width: 640px;
+    }
+
+    /* Feature grid */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .feature {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .feature:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .feature .emoji { font-size: 28px; margin-bottom: 12px; }
+    .feature h3 { margin: 0 0 6px; font-size: 17px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* Stages list */
+    .stages {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .stage-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .stage-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(179, 136, 255, .1);
+      border-radius: 6px;
+      padding: 4px 8px;
+      min-width: 32px; text-align: center;
+    }
+    .stage-name { font-size: 14px; }
+    .stage-tease {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 12px;
+      font-style: italic;
+    }
+
+    /* Tech row */
+    .tech {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center;
+    }
+    .tech-chip {
+      padding: 8px 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .tech-chip strong { color: var(--text); }
+
+    /* Demo callout */
+    .demo-callout {
+      background: linear-gradient(135deg, rgba(86, 204, 242, .1), rgba(179, 136, 255, .1));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+    }
+    .demo-callout h2 { margin: 0 0 12px; font-size: 26px; }
+    .demo-callout p { margin: 0 0 22px; color: var(--muted); }
+
+    /* Footer */
+    footer {
+      padding: 40px 0 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    footer .foot-links {
+      display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    footer .foot-links a { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <nav class="top">
+      <div class="brand">
+        <img src="./assets/icon-256.png" alt="" />
+        <span>Pixel Shader Academy</span>
+      </div>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="#stages">Stages</a>
+        <a href="https://shader.dolstep.com" target="_blank" rel="noopener">Demo</a>
+        <a href="#buy">Buy</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <img class="banner" src="./assets/banner.png" alt="Pixel Shader Academy" />
+
+      <div class="badges">
+        <span class="badge">GLSL fragment shaders</span>
+        <span class="badge">Auto-graded stages</span>
+        <span class="badge">EN + 한국어</span>
+        <span class="badge">No install — runs in any browser</span>
+      </div>
+
+      <h1>Learn GLSL the way you learn a video game.</h1>
+      <p class="tagline">
+        Write shader code on the right. Watch the live preview on top. Read the lesson on the left.
+        Hit <code class="mono">Check</code> and let the auto-grader compare your output against the reference solution.
+      </p>
+
+      <div class="cta-row">
+        <a class="cta primary" href="https://shader.dolstep.com" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          Play the Free Demo
+        </a>
+        <a class="cta secondary" href="#buy">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-1.6 10.2A2 2 0 0 1 17.4 19H6.6a2 2 0 0 1-2-1.8L3 7z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+          Get the Full Game
+          <span class="soon">itch.io — soon</span>
+        </a>
+      </div>
+    </header>
+
+    <section id="features">
+      <h2 class="section-title">What's inside</h2>
+      <p class="section-sub">A complete fragment-shader curriculum wrapped in a game-shaped learning loop.</p>
+
+      <div class="features">
+        <div class="feature">
+          <div class="emoji">📚</div>
+          <h3>100+ hand-written lesson pages</h3>
+          <p>Every stage ships with an authored book covering the concept, the GLSL builtins involved, and a hint-driven challenge. EN + 한국어, fully searchable.</p>
+        </div>
+        <div class="feature">
+          <div class="emoji">✅</div>
+          <h3>Auto-grading at the press of a button</h3>
+          <p>The Check button renders your shader and the reference solution at multiple time samples, then scores the per-channel difference. Tolerances are generous — no nitpicking over rounding.</p>
+        </div>
+        <div class="feature">
+          <div class="emoji">⚡</div>
+          <h3>Instant feedback, no toolchain</h3>
+          <p>CodeMirror 6 editor, Three.js fullscreen quad, <code class="mono">Ctrl+Enter</code> to compile. Errors come back with named lines, not <code class="mono">ERROR: 0:42</code>.</p>
+        </div>
+        <div class="feature">
+          <div class="emoji">🖼️</div>
+          <h3>Bring your own texture</h3>
+          <p>Upload an image, crop it square with built-in Cropper.js, and sample it in your shader via <code class="mono">u_texture</code>. Stages 6+ use it.</p>
+        </div>
+        <div class="feature">
+          <div class="emoji">🌗</div>
+          <h3>Light and dark themes</h3>
+          <p>Cool-gray light palette for daylight, deep-purple dark mode for late-night shader hacking. Editor selection colors travel with the theme.</p>
+        </div>
+        <div class="feature">
+          <div class="emoji">🌐</div>
+          <h3>Runs in any modern browser</h3>
+          <p>Built on WebGL via Three.js. No download, no install, no Node, no Unity. Open a tab and start writing shaders.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="stages">
+      <h2 class="section-title">A growing world of stages</h2>
+      <p class="section-sub">Twelve stages live today, with the curriculum expanding toward 100 across 9 categories.</p>
+
+      <div class="stages">
+        <div class="stage-card"><span class="stage-num">01</span><span class="stage-name">UV Gradient</span></div>
+        <div class="stage-card"><span class="stage-num">02</span><span class="stage-name">Time-Based Blink</span></div>
+        <div class="stage-card"><span class="stage-num">03</span><span class="stage-name">Remap Sin to 0..1</span></div>
+        <div class="stage-card"><span class="stage-num">04</span><span class="stage-name">Circle Mask</span></div>
+        <div class="stage-card"><span class="stage-num">05</span><span class="stage-name">Circle Outline</span></div>
+        <div class="stage-card"><span class="stage-num">06</span><span class="stage-name">Sample a Texture</span></div>
+        <div class="stage-card"><span class="stage-num">07</span><span class="stage-name">Dissolve Effect</span></div>
+        <div class="stage-card"><span class="stage-num">08</span><span class="stage-name">Hit Flash</span></div>
+        <div class="stage-card"><span class="stage-num">09</span><span class="stage-name">Pixelation</span></div>
+        <div class="stage-card"><span class="stage-num">10</span><span class="stage-name">Wave Distortion</span></div>
+        <div class="stage-card"><span class="stage-num">11</span><span class="stage-name">Combine Everything</span></div>
+        <div class="stage-card"><span class="stage-num">12</span><span class="stage-name">Cosine-Palette Kaleidoscope</span></div>
+        <div class="stage-tease">…and many more in the works — synthwave skylines, fire shaders, raymarched scenes.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Built on the good stuff</h2>
+      <p class="section-sub">No proprietary runtime, no plugin pile. Just web standards and well-loved libraries.</p>
+      <div class="tech">
+        <div class="tech-chip"><strong>Three.js</strong> — WebGL renderer</div>
+        <div class="tech-chip"><strong>CodeMirror 6</strong> — editor</div>
+        <div class="tech-chip"><strong>Cropper.js</strong> — texture crop</div>
+        <div class="tech-chip"><strong>Vite + TypeScript</strong> — build</div>
+        <div class="tech-chip"><strong>localStorage</strong> — drafts &amp; progress</div>
+      </div>
+    </section>
+
+    <section id="buy">
+      <div class="demo-callout">
+        <h2>Try it free, then own it.</h2>
+        <p>
+          The live demo at <a href="https://shader.dolstep.com">shader.dolstep.com</a> always has the latest playable stages.
+          When the full game launches on itch.io, you'll get the entire curriculum, offline access, and future stage packs.
+        </p>
+        <div class="cta-row">
+          <a class="cta primary" href="https://shader.dolstep.com" target="_blank" rel="noopener">
+            Play the Free Demo →
+          </a>
+          <a class="cta secondary" href="#" aria-disabled="true" onclick="event.preventDefault(); alert('Wishlist on itch.io launching soon — thanks for the interest!');">
+            Wishlist on itch.io
+            <span class="soon">soon</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="foot-links">
+        <a href="https://shader.dolstep.com" target="_blank" rel="noopener">shader.dolstep.com</a>
+        <a href="https://github.com/bobddadoo/pixel-shader-academy" target="_blank" rel="noopener">GitHub</a>
+        <a href="#buy">itch.io (soon)</a>
+      </div>
+      <div>Made with ❤️ and <code class="mono">gl_FragCoord</code>. © 2026 dolstep.</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
